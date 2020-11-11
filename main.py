@@ -55,18 +55,22 @@ def main():
         if os.path.isfile(args.resume):
             print('Loading checkpoint {}...'.format(args.resume))
             checkpoint = torch.load(args.resume) if use_gpu else torch.load(args.resume, map_location=lambda storage, loc: storage)
-            args.start_epoch = checkpoint['epoch']
-            best_losses = checkpoint['best_losses']
-            model.load_state_dict(checkpoint['state_dict'])
-            optimizer.load_state_dict(checkpoint['optimizer'])
-            print('Finished loading checkpoint. Resuming from epoch {}'.format(checkpoint['epoch']))
+            print(checkpoint.keys())
+            # args.start_epoch = checkpoint['epoch']
+            # best_losses = checkpoint['best_losses']
+            # model.load_state_dict(checkpoint['state_dict'])
+            # optimizer.load_state_dict(checkpoint['optimizer'])
+            # print('Finished loading checkpoint. Resuming from epoch {}'.format(checkpoint['epoch']))
         else:
             print('Checkpoint filepath incorrect.')
             return
     elif args.evaluate:
         # print('/content/drive/My Drive/checkpoints/model_best.pth.tar')
-        if os.path.isfile('/content/drive/My Drive/checkpoints/best_model.pth'):
-            model.load_state_dict(torch.load('/content/drive/My Drive/checkpoints/best_model.pth'))
+        if os.path.isfile('/content/checkpoint-trained.pth.tar'):
+            model.load_state_dict(torch.load('/content/checkpoint-trained.pth.tar')['state_dict'])
+            # checkpoint = torch.load('/content/checkpoint-trained.pth.tar')
+            # print(checkpoint.keys())
+            # return
             print('Loaded pretrained model.')
         else:
             print('Pretrained model filepath incorrect.')
@@ -217,7 +221,8 @@ def validate(val_loader, model, criterion, save_images, epoch):
         # Save images to file
         if save_images:
             for j in range(len(output_ab)):
-                save_path = {'grayscale': '/content/drive/My Drive/outputs/gray/', 'colorized': '/content/drive/My Drive/outputs/color/'}
+                # save_path = {'grayscale': '/content/drive/My Drive/outputs/gray/', 'colorized': '/content/drive/My Drive/outputs/color/'}
+                save_path = {'grayscale': '/content/Face-Colorization/outputs/gray/', 'colorized': '/content/Face-Colorization/outputs/color/'}
                 save_name = 'img-{}-epoch-{}.jpg'.format(i * val_loader.batch_size + j, epoch)
                 visualize_image(input_gray[j], ab_input=output_ab[j].data, show_image=False, save_path=save_path, save_name=save_name)
 
